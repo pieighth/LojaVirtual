@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LojaVirtualModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="varchar" MaxLength="50" />
+    <Property Name="Login" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="Senha" Type="varchar" MaxLength="20" />
+    <Property Name="Endereco" Type="varchar" MaxLength="250" />
+    <Property Name="Bairro" Type="varchar" MaxLength="50" />
+    <Property Name="Municipio" Type="varchar" MaxLength="50" />
+    <Property Name="UF" Type="varchar" MaxLength="2" />
+    <Property Name="CEP" Type="varchar" MaxLength="8" />
+    <Property Name="Telefone" Type="varchar" MaxLength="11" />
+  </EntityType>
+  <EntityType Name="ItemPedido">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idPedido" Type="int" Nullable="false" />
+    <Property Name="idProduto" Type="int" Nullable="false" />
+    <Property Name="Quantidade" Type="int" />
+    <Property Name="ValorUnitario" Type="real" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCliente" Type="int" />
+    <Property Name="DataPedido" Type="date" />
+    <Property Name="DataEntrega" Type="date" />
+    <Property Name="DataEnvio" Type="date" />
+    <Property Name="PrecoFrete" Type="real" />
+  </EntityType>
+  <EntityType Name="Produto">
+    <Key>
+      <PropertyRef Name="CodigoProduto" />
+    </Key>
+    <Property Name="CodigoProduto" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="varchar" MaxLength="50" />
+    <Property Name="Descricao" Type="varchar" MaxLength="250" />
+    <Property Name="PrecoUnitario" Type="real" />
+    <Property Name="Fabricante" Type="int" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <Association Name="FK_ItemPedido_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="1" />
+    <End Role="ItemPedido" Type="Self.ItemPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ItemPedido">
+        <PropertyRef Name="idPedido" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPedido_Produto">
+    <End Role="Produto" Type="Self.Produto" Multiplicity="1" />
+    <End Role="ItemPedido" Type="Self.ItemPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Produto">
+        <PropertyRef Name="CodigoProduto" />
+      </Principal>
+      <Dependent Role="ItemPedido">
+        <PropertyRef Name="idProduto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="IdCliente" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LojaVirtualModelStoreContainer">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ItemPedido" EntityType="Self.ItemPedido" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Produto" EntityType="Self.Produto" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ItemPedido_Pedido" Association="Self.FK_ItemPedido_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="ItemPedido" EntitySet="ItemPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPedido_Produto" Association="Self.FK_ItemPedido_Produto">
+      <End Role="Produto" EntitySet="Produto" />
+      <End Role="ItemPedido" EntitySet="ItemPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

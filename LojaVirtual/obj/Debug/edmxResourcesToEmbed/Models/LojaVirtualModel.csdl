@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LojaVirtualModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Login" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Senha" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Endereco" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="Bairro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Municipio" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UF" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+    <Property Name="CEP" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="Telefone" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Pedido" Relationship="Self.FK_Pedido_Cliente" FromRole="Cliente" ToRole="Pedido" />
+  </EntityType>
+  <EntityType Name="ItemPedido">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idPedido" Type="Int32" Nullable="false" />
+    <Property Name="idProduto" Type="Int32" Nullable="false" />
+    <Property Name="Quantidade" Type="Int32" />
+    <Property Name="ValorUnitario" Type="Single" />
+    <NavigationProperty Name="Pedido" Relationship="Self.FK_ItemPedido_Pedido" FromRole="ItemPedido" ToRole="Pedido" />
+    <NavigationProperty Name="Produto" Relationship="Self.FK_ItemPedido_Produto" FromRole="ItemPedido" ToRole="Produto" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdCliente" Type="Int32" />
+    <Property Name="DataPedido" Type="DateTime" Precision="0" />
+    <Property Name="DataEntrega" Type="DateTime" Precision="0" />
+    <Property Name="DataEnvio" Type="DateTime" Precision="0" />
+    <Property Name="PrecoFrete" Type="Single" />
+    <NavigationProperty Name="Cliente" Relationship="Self.FK_Pedido_Cliente" FromRole="Pedido" ToRole="Cliente" />
+    <NavigationProperty Name="ItemPedido" Relationship="Self.FK_ItemPedido_Pedido" FromRole="Pedido" ToRole="ItemPedido" />
+  </EntityType>
+  <EntityType Name="Produto">
+    <Key>
+      <PropertyRef Name="CodigoProduto" />
+    </Key>
+    <Property Name="CodigoProduto" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nome" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Descricao" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="PrecoUnitario" Type="Single" />
+    <Property Name="Fabricante" Type="Int32" />
+    <NavigationProperty Name="ItemPedido" Relationship="Self.FK_ItemPedido_Produto" FromRole="Produto" ToRole="ItemPedido" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="IdCliente" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPedido_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="1" />
+    <End Role="ItemPedido" Type="Self.ItemPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ItemPedido">
+        <PropertyRef Name="idPedido" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ItemPedido_Produto">
+    <End Role="Produto" Type="Self.Produto" Multiplicity="1" />
+    <End Role="ItemPedido" Type="Self.ItemPedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Produto">
+        <PropertyRef Name="CodigoProduto" />
+      </Principal>
+      <Dependent Role="ItemPedido">
+        <PropertyRef Name="idProduto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LojaVirtualEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" />
+    <EntitySet Name="ItemPedido" EntityType="Self.ItemPedido" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" />
+    <EntitySet Name="Produto" EntityType="Self.Produto" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPedido_Pedido" Association="Self.FK_ItemPedido_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="ItemPedido" EntitySet="ItemPedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ItemPedido_Produto" Association="Self.FK_ItemPedido_Produto">
+      <End Role="Produto" EntitySet="Produto" />
+      <End Role="ItemPedido" EntitySet="ItemPedido" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
